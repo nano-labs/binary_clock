@@ -1,6 +1,9 @@
 # binary_clock
 A [binary clock](https://en.wikipedia.org/wiki/Binary_clock) is just a clock but instead of using arabic numbers (zero to nine) it uses binary numbers represented by lights on or off (ones and zeros).
 
+![front 3d](/images/front-3d.png "Front 3D")
+
+
 ## Display
 It shows 6 columns representing time in HH:MM:SS with 4 lights (LEDs) each so each digit is shown as a 4 bits binary number, being the Least Significant Bit on the top.
 
@@ -12,3 +15,13 @@ To read a column first translate the lights on or off as zeros and ones so each 
 |:---    | :----:              | :----:              | :----:              | :----:              | :----:              | :----:              | :----:              | :----:              | :----:              | :----:              |
 | Binary | 0000                | 0001                | 0010                | 0011                | 0100                | 0101                | 0110                | 0111                | 1000                | 1001                |
 | Arabic | 0                   | 1                   | 2                   | 3                   | 4                   | 5                   | 6                   | 7                   | 8                   | 9                   |
+## Schematics
+ https://oshwlab.com/nanook/binaryclock
+
+![Schematic](/images/schematic.png "Schematic")
+
+## Printed circuit board
+![front 3d](/images/front-3d.png "Front 3D")
+![back 3d](/images/back-3d.png "Back 3D")
+![front PCB](/images/front-pcb.png "Front PCB")
+![back PCB](/images/back-pcb.png "Back PCB")
