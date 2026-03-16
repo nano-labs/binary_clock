@@ -10,16 +10,18 @@
 Adafruit_TLC5947 tlc = Adafruit_TLC5947(NUM_TLC5947, clock, data, latch);
 RTC_DS3231 rtc;
 
-uint16_t H1 = 0;
-uint16_t H2 = 4;
-uint16_t M1 = 8;
-uint16_t M2 = 12;
-uint16_t S1 = 16;
-uint16_t S2 = 20;
+uint16_t H1[] = {13, 12, 10, 11};
+uint16_t H2[] = {15, 14, 8, 9};
+uint16_t M1[] = {17, 16, 6, 7};
+uint16_t M2[] = {19, 18, 4, 5};
+uint16_t S1[] = {21, 20, 2, 3};
+uint16_t S2[] = {23, 22, 0, 1};
 
 int BRIGHTNESS = 300; // 4095 max
 
 void setup() {
+  Serial.begin(9600);
+
   rtc.begin();
   if (rtc.lostPower()) {
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
@@ -33,6 +35,25 @@ void loop() {
   // testAll();
   setTime();
   delay(1000);
+  // read();
+}
+
+void read() {
+  char message[3];
+  if (Serial.available()) {
+    int bytesRead = Serial.readBytesUntil('\n', message, sizeof(message) - 1);
+    message[bytesRead] = '\0';
+
+    Serial.print("You said: ");
+    Serial.println(message);
+    uint16_t i;
+    sscanf(message, "%d", &i);
+    for (uint16_t pos = 0; pos <= 23; pos++) {
+      tlc.setPWM(pos, 0);
+    }
+    tlc.setPWM(i, BRIGHTNESS);
+    tlc.write();
+  }
 }
 
 void testAll() {
@@ -48,12 +69,12 @@ void testAll() {
   delay(3000);
 }
 
-void setDigit(uint16_t position, uint8_t number) {
+void setDigit(uint16_t position[], uint8_t number) {
   for (uint8_t shift = 0; shift <= 3; shift++) {
     if ((number >> (3-shift)) & 1) {
-      tlc.setPWM(position + shift, BRIGHTNESS);
+      tlc.setPWM(position[shift], BRIGHTNESS);
     } else {
-      tlc.setPWM(position + shift, 0);
+      tlc.setPWM(position[shift], 0);
     }
   }
 }
