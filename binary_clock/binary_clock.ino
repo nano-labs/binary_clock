@@ -2,20 +2,20 @@
 #include "RTClib.h"
 
 #define NUM_TLC5947 1
-#define data   5
-#define clock   4
-#define latch   6
+#define data   4
+#define clock   3
+#define latch   5
 #define oe  -1
 
 Adafruit_TLC5947 tlc = Adafruit_TLC5947(NUM_TLC5947, clock, data, latch);
 RTC_DS3231 rtc;
 
-uint16_t H1[] = {13, 12, 10, 11};
-uint16_t H2[] = {15, 14, 8, 9};
-uint16_t M1[] = {17, 16, 6, 7};
-uint16_t M2[] = {19, 18, 4, 5};
-uint16_t S1[] = {21, 20, 2, 3};
-uint16_t S2[] = {23, 22, 0, 1};
+uint16_t H1[] = {23, 22, 21, 20};
+uint16_t H2[] = {19, 18, 17, 16};
+uint16_t M1[] = {15, 12, 13, 14};
+uint16_t M2[] = {0, 1, 2, 3};
+uint16_t S1[] = {4, 5, 6, 7};
+uint16_t S2[] = {8, 9, 10, 11};
 
 int BRIGHTNESS = 300; // 4095 max
 
@@ -32,10 +32,13 @@ void setup() {
 }
 
 void loop() {
+  // allOff();
+  // testNumbers();
   // testAll();
   setTime();
-  delay(1000);
+  delay(200);
   // read();
+
 }
 
 void read() {
@@ -48,9 +51,7 @@ void read() {
     Serial.println(message);
     uint16_t i;
     sscanf(message, "%d", &i);
-    for (uint16_t pos = 0; pos <= 23; pos++) {
-      tlc.setPWM(pos, 0);
-    }
+    allOff();
     tlc.setPWM(i, BRIGHTNESS);
     tlc.write();
   }
@@ -62,11 +63,22 @@ void testAll() {
   }
   tlc.write();
   delay(3000);
-  for (uint16_t pos = 0; pos <= 23; pos++) {
-    tlc.setPWM(pos, 0);
-  }
-  tlc.write();
+  allOff();
   delay(3000);
+}
+
+void testNumbers() {
+  allOff();
+  for (int n = 0; n <= 9; n++) {
+    setDigit(H1, n);
+    setDigit(H2, n);
+    setDigit(M1, n);
+    setDigit(M2, n);
+    setDigit(S1, n);
+    setDigit(S2, n);
+    tlc.write();
+    delay(2000);
+  }
 }
 
 void setDigit(uint16_t position[], uint8_t number) {
@@ -93,7 +105,15 @@ void setTime() {
   tlc.write();
 }
 
+void allOff() {
+  for (uint16_t pos = 0; pos <= 23; pos++) {
+    tlc.setPWM(pos, 0);
+  }
+  tlc.write();
+}
+
 void who() {
+  allOff();
   // 0 1 2 3 4 5 6 7 8 9 A B C D E F
   setDigit(H1, 15);
   setDigit(H2, 10);
